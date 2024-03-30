@@ -1,10 +1,12 @@
-const { Client, GatewayIntentBits } = require('discord.js');
+const { Client, GatewayIntentBits, ChannelType  } = require('discord.js');
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildVoiceStates,
   ]
 });
 
@@ -37,5 +39,41 @@ client.on("messageCreate", async message => {
   // Executa o comando
   if (commandFile) commandFile.execute(message, args);
 });
+
+
+client.on('voiceStateUpdate', async (oldState, newState) => {
+  // Criar canal de voz quando o usuário entrar no canal "Clique aqui ✅"
+  if (!oldState.channel && newState.channel && newState.channel.name === 'Clique aqui ✅') {
+    const userName = client.users.cache.get(newState.id)?.username || 'Usuário';
+
+    try {
+      const category = newState.channel.parent; // Obter a categoria do canal "Clique aqui ✅"
+
+      const channel = await newState.guild.channels.create({
+        name: userName,
+        type: ChannelType.GuildVoice,
+        parent: category.id, // Definir a categoria do novo canal
+      });
+
+      await newState.guild.channels.fetch();
+      await newState.setChannel(channel);
+
+      console.log(`Canal de voz criado: ${channel.name}`);
+    } catch (error) {
+      console.error('Erro ao criar canal de voz:', error);
+    }
+  }
+
+  // Excluir canal de voz quando o usuário sair do canal "[username]'s Channel"
+  if (oldState.channel && !newState.channel && oldState.channel.name === `${client.users.cache.get(oldState.id)?.username}`) {
+    try {
+      await oldState.channel.delete();
+    } catch (error) {
+      console.error('Erro ao excluir canal de voz:', error);
+    }
+  }
+});
+
+
 
 client.login(token);
