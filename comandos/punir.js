@@ -1,12 +1,4 @@
-const { Client, EmbedBuilder, GatewayIntentBits } = require('discord.js');
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers,
-  ]
-});
+const { EmbedBuilder } = require('discord.js');
 module.exports = {
   name: 'punir',
   description: 'Pune um membro do servidor.',
@@ -27,14 +19,14 @@ module.exports = {
       return message.reply({
         embeds: [
           new EmbedBuilder()
-          .setDescription(`!punir [usuário] [tempo] [motivo]`)
-          .setColor(0x0099FF)
+            .setDescription(`!punir [usuário] [tempo] [motivo]`)
+            .setColor(0x0099FF)
         ]
       });
     }
 
     // Converte o tempo de punição para segundos
-    const timeInSeconds = parseInt(args[1]) * 60;
+    const timeInSeconds = parseInt(args[1]);
 
     // Verifica se o tempo de punição é válido
     if (timeInSeconds <= 0 || timeInSeconds > 60 * 60 * 24 * 7) {
@@ -42,12 +34,11 @@ module.exports = {
     }
 
     try {
-        // `${timeInSeconds}_000`
-      // Punição
-      await member.timeout(timeInSeconds);
+      // const time = parseInt(timeInSeconds + "_000");
 
+      await member.timeout(timeInSeconds * 60 * 1000) ;
       // Mensagem de confirmação
-      message.reply(`${member.user.tag} foi punido por ${args[1]} minutos.`);
+      message.reply(`${member.user.tag} foi punido por ${args[1]} minutos. Motivo: ${args.slice(2).join(" ")}.`);
 
       // Notificar o membro
       member.send(`Você foi punido por ${args[1]} minutos. Motivo: ${args.slice(2).join(" ")}.`);
