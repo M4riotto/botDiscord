@@ -3,7 +3,7 @@ module.exports = {
         command :"!",
     },
     app: {
-        // token: 'MTIyMzMyMDQwMjEyNjcwNDcwMA.GPo6a-.TtMUdtr6RvrjlKKsQ-vFMHEIkwKDWc42c6rZso',
+        // token: 'MTIyMzMyMDQwMjEyNjcwNDcwMA.GtCqqO.bDeCgK2dVtkdB5ZBbbKRLne-KQ-T9qcupOcia4',
         playing: 'by CORINGA ❤️',
         global: true,
 
