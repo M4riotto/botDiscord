@@ -10,8 +10,8 @@ const client = new Client({
   ]
 });
 
-const { token, prefix } = require('./config.json');
-
+const { app, prefix } = require('./config.js');
+const prefixo = prefix.command
 client.on("ready", () => {
   console.log(`Bot foi iniciado, com ${client.users.cache.size} usuários, ${client.channels.cache.size} canais e ${client.guilds.cache.size} servidores.`);
   client.user.setActivity(`Eu estou em ${client.guilds.cache.size} servidores`);
@@ -30,7 +30,7 @@ client.on("guildDelete", guild => {
 client.on("messageCreate", async message => {
   if (message.author.bot) return;
 
-  const args = message.content.slice(prefix.length).trim().split(/ +/);
+  const args = message.content.slice(prefixo.length).trim().split(/ +/);
   const comando = args.shift().toLowerCase();
 
   // Carrega o comando do arquivo correspondente
@@ -76,4 +76,4 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 
 
 
-client.login(token);
+client.login(app.token);
