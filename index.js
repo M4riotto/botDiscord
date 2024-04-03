@@ -27,9 +27,27 @@ client.on("guildDelete", guild => {
   client.user.setActivity(`Serving ${client.guilds.cache.size} servidores`);
 });
 
-client.on("messageCreate", async message => {
+client.on('messageCreate', async message => {
+  // Verificar se a mensagem não foi enviada por um bot
   if (message.author.bot) return;
 
+  // Verificar se a mensagem está em um canal específico e contém um link
+  if (message.channel.id === '1223853315880779817' && message.content.match(/(http(s)?:\/\/[^ ]*)/)) {
+    // Excluir a mensagem que contém o link
+    await message.delete();
+
+    // Punição - exemplo: enviar uma mensagem de aviso e/ou aplicar uma punição ao autor
+    const member = message.member;
+    // Aqui você pode aplicar um mute, banimento, ou qualquer outra ação que desejar
+    // Por exemplo, enviar uma mensagem de aviso:
+    await message.channel.send(`${member}, links não são permitidos neste canal. Por favor, leia as regras.`);
+    await member.timeout(300_000); // Punição de 5 minutos
+
+    // Interromper a execução para evitar a execução do segundo evento
+    return;
+  }
+
+  // Se a mensagem não contém link ou não está no canal específico, executar o código normalmente
   const args = message.content.slice(prefixo.length).trim().split(/ +/);
   const comando = args.shift().toLowerCase();
 
