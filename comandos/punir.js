@@ -36,15 +36,29 @@ module.exports = {
     try {
       // const time = parseInt(timeInSeconds + "_000");
 
-      await member.timeout(timeInSeconds * 60 * 1000) ;
-      // Mensagem de confirmação
-      message.reply(`${member.user.tag} foi punido por ${args[1]} minutos. Motivo: ${args.slice(2).join(" ")}.`);
+      await member.timeout(timeInSeconds * 60 * 1000);
+
+      const embed = new EmbedBuilder()
+        .setDescription(`${member.user.tag} foi punido por ${args[1]} minutos. Motivo: ${args.slice(2).join(" ")}.`)
+        .setColor(0x0099FF)
 
       // Notificar o membro
       member.send(`Você foi punido por ${args[1]} minutos. Motivo: ${args.slice(2).join(" ")}.`);
+
+
+      return await message.reply({ ephemeral: true, embeds: [embed] });
+
+
     } catch (err) {
       console.error(err);
-      return message.reply("Ocorreu um erro ao punir o membro.");
+      return message.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setDescription("Ocorreu um erro ao punir o membro." . err)
+            .setColor(0x0099FF)
+
+        ]
+      });
     }
   },
 };
